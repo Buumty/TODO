@@ -1,9 +1,6 @@
 package com.wojciechandrzejczak.TODO.task;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
@@ -11,12 +8,13 @@ import java.time.LocalDateTime;
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-    String title;
-    String description;
-    TaskStatus taskStatus;
+    private Long id;
+    private String title;
+    private String description;
+    @Enumerated(EnumType.STRING)
+    private TaskStatus taskStatus;
 
-    LocalDateTime createdAt;
+    private LocalDateTime createdAt;
 
     public Task() {}
 
@@ -25,6 +23,16 @@ public class Task {
         this.description = description;
         this.taskStatus = TaskStatus.NEW;
         this.createdAt = LocalDateTime.now();
+    }
+
+    @PrePersist
+    public void prePersist() {
+        if (taskStatus == null) {
+            taskStatus = TaskStatus.NEW;
+        }
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
     }
 
     public Long getId() {
