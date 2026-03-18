@@ -33,10 +33,18 @@ Endpoints:
 - `DELETE /api/tasks/{id}`
 
 ## Run with Docker
+### 1. Clone repository
 
-### Build image
+git clone https://github.com/Buumty/TODO.git
+cd TODO
+
+### 2. Build image
 
 docker build -t todo-api .
+
+### 3. Run container
+
+docker run -p 8080:8080 todo-api
 
 App will be available at:
 
