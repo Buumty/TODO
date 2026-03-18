@@ -1,4 +1,4 @@
-package com.wojciechandrzejczak.TODO;
+package com.wojciechandrzejczak.TODO.task;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

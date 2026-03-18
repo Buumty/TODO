@@ -1,4 +1,4 @@
-package com.wojciechandrzejczak.TODO;
+package com.wojciechandrzejczak.TODO.task;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,7 +36,7 @@ public class TaskService {
             existingTask.setDescription(newProduct.getDescription());
         } else throw new IllegalArgumentException("Task description cannot be blank");
 
-        return taskRepository.save(newProduct);
+        return taskRepository.save(existingTask);
     }
 
     public void deleteTask(Long id) {

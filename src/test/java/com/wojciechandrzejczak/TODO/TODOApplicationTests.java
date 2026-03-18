@@ -1,5 +1,8 @@
 package com.wojciechandrzejczak.TODO;
 
+import com.wojciechandrzejczak.TODO.task.Task;
+import com.wojciechandrzejczak.TODO.task.TaskRepository;
+import com.wojciechandrzejczak.TODO.task.TaskService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,9 +26,9 @@ class TODOApplicationTests {
 
 	@Test
 	public void givenTasksInDataBase_whenFindAllTasks_thenReturnAllTasks() {
-		Task task1 = new Task("Do groceries", "description");
-		Task task2 = new Task("Make dinner", "description");
-		Task task3 = new Task("Learn English", "description");
+		Task task1 = new Task("Do groceries", "Buy groceries for the next few days.");
+		Task task2 = new Task("Make dinner", "Cook a quick and healthy dinner.");
+		Task task3 = new Task("Learn English", "Practice English for at least 30 minutes.");
 
 		List<Task> taskList = new ArrayList<>();
 		taskList.add(task1);
@@ -50,7 +53,7 @@ class TODOApplicationTests {
 	}
 	@Test
 	public void givenTaskInDatabase_whenFindAllTasks_thenReturnTaskWithCorrectDetails() {
-		Task task1 = new Task("Do groceries", "description");
+		Task task1 = new Task("Do groceries", "Buy groceries for the next few days.");
 
 		ArrayList<Task> taskList = new ArrayList<>();
 		taskList.add(task1);
@@ -69,7 +72,7 @@ class TODOApplicationTests {
 
 	@Test
 	void givenValidId_whenFindTaskById_thenReturnTask() {
-		Task existingTask = new Task("Do groceries", "description");
+		Task existingTask = new Task("Do groceries", "Buy groceries for the next few days.");
 		existingTask.setId(1L);
 
 		when(taskRepository.findById(1L)).thenReturn(Optional.of(existingTask));
@@ -81,7 +84,7 @@ class TODOApplicationTests {
 
 	@Test
 	public void givenValidTask_whenCreateTask_thenSaveAndReturnTask() {
-		Task inputTask = new Task("Do groceries", "description");
+		Task inputTask = new Task("Do groceries", "Buy groceries for the next few days.");
 
 		when(taskRepository.save(any(Task.class))).thenReturn(inputTask);
 
@@ -103,7 +106,7 @@ class TODOApplicationTests {
 	}
 
 	@Test void givenTaskWithBlankTitle_whenCreateTask_thenThrowIllegalArgumentException() {
-		Task inputTask = new Task("", "description");
+		Task inputTask = new Task("", "Buy groceries for the next few days.");
 
 		assertThrows(IllegalArgumentException.class,
 				() -> taskService.createTask(inputTask));
@@ -111,10 +114,10 @@ class TODOApplicationTests {
 
 	@Test
 	void givenValidNewTask_whenUpdateTask_thenReturnUpdatedTask() {
-		Task exsitingTask = new Task("Do groceries", "Go to teh shop and make groceries for today's dinner");
+		Task exsitingTask = new Task("Do groceries", "Buy groceries for the next few days.");
 		exsitingTask.setId(1L);
 
-		Task newTask = new Task("Make dinner", "Cook delicious meal");
+		Task newTask = new Task("Make dinner", "Cook a quick and healthy dinner.");
 
 		when(taskRepository.findById(1L)).thenReturn(Optional.of(exsitingTask));
 		when(taskRepository.save(any(Task.class))).thenReturn(newTask);
@@ -134,7 +137,7 @@ class TODOApplicationTests {
 	void givenNonExistingId_whenUpdateTask_thenThrowNoSuchElementException() {
 		Long nonExistingId = 1000L;
 
-		Task newTask = new Task("Make dinner", "Cook delicious meal");
+		Task newTask = new Task("Make dinner", "Cook a quick and healthy dinner.");
 
 		when(taskRepository.findById(nonExistingId)).thenReturn(Optional.empty());
 
@@ -146,10 +149,10 @@ class TODOApplicationTests {
 
 	@Test
 	void givenTaskWithBlankTitle_whenUpdateTask_thenReturnIllegalArgumentException() {
-		Task exsitingTask = new Task("Do groceries", "Go to teh shop and make groceries for today's dinner");
+		Task exsitingTask = new Task("Do groceries", "Buy groceries for the next few days.");
 		exsitingTask.setId(1L);
 
-		Task newTask = new Task("", "Cook delicious meal");
+		Task newTask = new Task("", "Cook a quick and healthy dinner.");
 
 		when(taskRepository.findById(1L)).thenReturn(Optional.of(exsitingTask));
 
@@ -162,7 +165,7 @@ class TODOApplicationTests {
 
 	@Test
 	void givenTaskWithBlankDescription_whenUpdateTask_thenReturnIllegalArgumentException() {
-		Task exsitingTask = new Task("Do groceries", "Go to teh shop and make groceries for today's dinner");
+		Task exsitingTask = new Task("Do groceries", "Buy groceries for the next few days.");
 		exsitingTask.setId(1L);
 
 		Task newTask = new Task("Make dinner", "");
@@ -178,7 +181,7 @@ class TODOApplicationTests {
 
 	@Test
 	void givenValidId_whenDeleteTaskById_thenDeleteTask() {
-		Task exsitingTask = new Task("Do groceries", "Go to teh shop and make groceries for today's dinner");
+		Task exsitingTask = new Task("Do groceries", "Buy groceries for the next few days.");
 		exsitingTask.setId(1L);
 
 		when(taskRepository.findById(1L)).thenReturn(Optional.of(exsitingTask));
@@ -193,7 +196,7 @@ class TODOApplicationTests {
 	void givenNonExistingId_whenDeleteProductById_thenThrowNoSuchElementException() {
 		Long nonExistingId = 1000L;
 
-		Task exsitingTask = new Task("Do groceries", "Go to teh shop and make groceries for today's dinner");
+		Task exsitingTask = new Task("Do groceries", "Buy groceries for the next few days.");
 		exsitingTask.setId(1L);
 
 		assertThrows(NoSuchElementException.class,

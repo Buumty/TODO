@@ -1,4 +1,4 @@
-package com.wojciechandrzejczak.TODO;
+package com.wojciechandrzejczak.TODO.task;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,6 +17,9 @@ public class Task {
     TaskStatus taskStatus;
 
     LocalDateTime createdAt;
+
+    public Task() {}
+
     public Task(String title, String description) {
         this.title = title;
         this.description = description;

@@ -1,4 +1,4 @@
-package com.wojciechandrzejczak.TODO;
+package com.wojciechandrzejczak.TODO.task;
 
 public enum TaskStatus {
     NEW,
