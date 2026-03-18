@@ -6,9 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -70,6 +68,18 @@ class TODOApplicationTests {
 	}
 
 	@Test
+	void givenValidId_whenFindTaskById_thenReturnTask() {
+		Task existingTask = new Task("Do groceries", "description");
+		existingTask.setId(1L);
+
+		when(taskRepository.findById(1L)).thenReturn(Optional.of(existingTask));
+
+		Task taskFromDb = taskService.findTaskById(1L);
+
+		verify(taskRepository, times(1)).findById(1L);
+	}
+
+	@Test
 	public void givenValidTask_whenCreateTask_thenSaveAndReturnTask() {
 		Task inputTask = new Task("Do groceries", "description");
 
@@ -97,5 +107,99 @@ class TODOApplicationTests {
 
 		assertThrows(IllegalArgumentException.class,
 				() -> taskService.createTask(inputTask));
+	}
+
+	@Test
+	void givenValidNewTask_whenUpdateTask_thenReturnUpdatedTask() {
+		Task exsitingTask = new Task("Do groceries", "Go to teh shop and make groceries for today's dinner");
+		exsitingTask.setId(1L);
+
+		Task newTask = new Task("Make dinner", "Cook delicious meal");
+
+		when(taskRepository.findById(1L)).thenReturn(Optional.of(exsitingTask));
+		when(taskRepository.save(any(Task.class))).thenReturn(newTask);
+
+		Task updatedTask = taskService.updateTask(1L, newTask);
+
+		assertEquals(newTask.getId(), updatedTask.getId());
+		assertEquals(newTask.getTitle(), updatedTask.getTitle());
+		assertEquals(newTask.getDescription(), updatedTask.getDescription());
+		assertEquals(newTask.getTaskStatus(), updatedTask.getTaskStatus());
+		assertEquals(newTask.getCreatedAt(), updatedTask.getCreatedAt());
+		verify(taskRepository,times(1)).save(any(Task.class));
+		verify(taskRepository, times(1)).findById(1L);
+	}
+
+	@Test
+	void givenNonExistingId_whenUpdateTask_thenThrowNoSuchElementException() {
+		Long nonExistingId = 1000L;
+
+		Task newTask = new Task("Make dinner", "Cook delicious meal");
+
+		when(taskRepository.findById(nonExistingId)).thenReturn(Optional.empty());
+
+		assertThrows(NoSuchElementException.class,
+				() -> taskService.updateTask(nonExistingId, newTask));
+
+		verify(taskRepository, times(1)).findById(nonExistingId);
+	}
+
+	@Test
+	void givenTaskWithBlankTitle_whenUpdateTask_thenReturnIllegalArgumentException() {
+		Task exsitingTask = new Task("Do groceries", "Go to teh shop and make groceries for today's dinner");
+		exsitingTask.setId(1L);
+
+		Task newTask = new Task("", "Cook delicious meal");
+
+		when(taskRepository.findById(1L)).thenReturn(Optional.of(exsitingTask));
+
+		assertThrows(IllegalArgumentException.class,
+				() -> taskService.updateTask(1L, newTask));
+
+		verify(taskRepository, times(1)).findById(1L);
+		verify(taskRepository, times(0)).save(any(Task.class));
+	}
+
+	@Test
+	void givenTaskWithBlankDescription_whenUpdateTask_thenReturnIllegalArgumentException() {
+		Task exsitingTask = new Task("Do groceries", "Go to teh shop and make groceries for today's dinner");
+		exsitingTask.setId(1L);
+
+		Task newTask = new Task("Make dinner", "");
+
+		when(taskRepository.findById(1L)).thenReturn(Optional.of(exsitingTask));
+
+		assertThrows(IllegalArgumentException.class,
+				() -> taskService.updateTask(1L, newTask));
+
+		verify(taskRepository, times(1)).findById(1L);
+		verify(taskRepository, times(0)).save(any(Task.class));
+	}
+
+	@Test
+	void givenValidId_whenDeleteTaskById_thenDeleteTask() {
+		Task exsitingTask = new Task("Do groceries", "Go to teh shop and make groceries for today's dinner");
+		exsitingTask.setId(1L);
+
+		when(taskRepository.findById(1L)).thenReturn(Optional.of(exsitingTask));
+
+		taskService.deleteTask(1L);
+
+		verify(taskRepository, times(1)).findById(1L);
+		verify(taskRepository, times(1)).delete(exsitingTask);
+	}
+
+	@Test
+	void givenNonExistingId_whenDeleteProductById_thenThrowNoSuchElementException() {
+		Long nonExistingId = 1000L;
+
+		Task exsitingTask = new Task("Do groceries", "Go to teh shop and make groceries for today's dinner");
+		exsitingTask.setId(1L);
+
+		assertThrows(NoSuchElementException.class,
+				() -> taskService.deleteTask(nonExistingId));
+
+		verify(taskRepository, times(1)).findById(nonExistingId);
+		verify(taskRepository, times(0)).delete(exsitingTask);
 	}
 }
